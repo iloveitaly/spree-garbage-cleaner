@@ -3,6 +3,13 @@ namespace :db do
 
     desc "Cleanup garbage by calling .destroy on every model marked as garbage"
     task :cleanup => :environment do
+      # https://github.com/spree/spree/blob/1-2-stable/core/app/models/spree/order.rb#L202
+      # shipping, and all other adjustments, are recalculated when the order is modified
+      # this causes exceptions in some causes which breaks the cleaning process
+      Spree::Order.class_eval do
+        def update!; end
+      end
+
       config = Spree::GarbageCleaner::Config
       garbage_models = config.models_with_garbage.delete(' ').split(',').map(&:constantize)
 
