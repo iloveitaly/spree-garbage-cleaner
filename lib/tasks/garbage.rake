@@ -5,9 +5,19 @@ namespace :db do
     task :cleanup => :environment do
       # https://github.com/spree/spree/blob/1-2-stable/core/app/models/spree/order.rb#L202
       # shipping, and all other adjustments, are recalculated when the order is modified
-      # this causes exceptions in some causes which breaks the cleaning process
+      # this causes exceptions in some cases (e.g. when the shipping method's zone has
+      # changed and the address on the order is no longer in the zone)
+
       Spree::Order.class_eval do
-        def update!; end
+        old_update = instance_method(:update!)
+
+        def update!
+          begin
+            old_update.bind(self).call
+          rescue Exception => e
+            puts "Error during Order#update!: #{e}"
+          end
+        end
       end
 
       config = Spree::GarbageCleaner::Config
