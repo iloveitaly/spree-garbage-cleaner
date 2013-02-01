@@ -11,7 +11,7 @@ namespace :db do
       Spree::Order.class_eval do
         old_update = instance_method(:update!)
 
-        def update!
+        define_method(:update!) do
           begin
             old_update.bind(self).call
           rescue Exception => e
