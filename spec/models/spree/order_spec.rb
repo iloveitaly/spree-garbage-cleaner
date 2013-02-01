@@ -15,7 +15,7 @@ describe Spree::Order do
     end
 
     it "has a method to destroy garbage" do
-      Spree::Order.destroy_garbage.should == [@order_one, @order_two]
+      Spree::Order.garbage.destroy_all.should == [@order_one, @order_two]
       Spree::Order.garbage.count.should == 0
       Spree::Order.all.should include(@order_three)
     end

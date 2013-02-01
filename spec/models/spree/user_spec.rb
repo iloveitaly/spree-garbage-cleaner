@@ -24,7 +24,7 @@ describe Spree.user_class do
     end
 
     it "has a method to destroy garbage" do
-      Spree.user_class.destroy_garbage.should == [@user_one, @user_two]
+      Spree.user_class.garbage.destroy_all.should == [@user_one, @user_two]
       Spree.user_class.garbage.count.should == 0
       Spree.user_class.all.should include(@user_three, @user_four)
     end
